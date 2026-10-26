@@ -464,7 +464,7 @@
     }
 
     /* ========================================================= */
-    /* LEFT-ALIGNED (TURKEY / GEORGIA) LAYOUT STYLES             */
+    /* LEFT-ALIGNED (TURKEY / GEORGIA / SYRIA) LAYOUT STYLES     */
     /* ========================================================= */
     .spotlight-view-container.layout-left .spotlight-stack {
       display: block;
@@ -718,7 +718,7 @@
               <img src="Resources/PastedVector-30.svg" alt="" class="spotlight-triangle-bg">
             </div>
 
-            <!-- DIAGONAL WEDGE FOR TURKEY & GEORGIA -->
+            <!-- DIAGONAL WEDGE FOR TURKEY, GEORGIA & SYRIA -->
             <svg class="spotlight-wedge" id="spotlight-wedge" aria-hidden="true">
               <polygon id="spotlight-wedge-poly" fill="#141F52"></polygon>
             </svg>
@@ -783,8 +783,8 @@
       syria: {
         title: "Obama’s “red line” in Syria",
         body: "In August 2012, Barack Obama gave a warning to Syria's president that the use of chemical weapons by the Assad government in the country's civil war would cross a “red line”. One year later, opposition-held areas near Damascus were struck by missiles containing sarin gas. Hundreds died. Obama asked for a Congressional resolution to authorise military action in Syria but, against a background of popular opposition to such action, the resolution was never voted on. Instead, Russia negotiated a deal under which Syria agreed to destroy its chemical-weapons stockpile and to join the Chemical Weapons Convention.",
-        mapImg: "Resources/PastedVector-37.svg",
-        layoutClass: "layout-left"
+        mapImg: "Resources/PastedVector-35.svg",
+        layoutClass: "layout-left zoom-map"
       },
       georgia: {
         title: "The Russo-Georgian war",
@@ -836,7 +836,7 @@
       return [a - o, a + o].map(t => [px + l * Math.cos(t), py + l * Math.sin(t)]);
     }
 
-    // Turkey/Georgia layout: card bottom-left, diagonal wedge connecting to the circle
+    // Turkey/Georgia/Syria layout: card bottom-left, diagonal wedge connecting to the circle
     function alignLeftLayout(pin) {
       const app = document.getElementById('interactive-app');
       const stage = document.querySelector('.stage-view');
@@ -860,8 +860,7 @@
       circle.style.setProperty('--cx', cx + 'px');
       circle.style.setProperty('--cy', cy + 'px');
 
-      // Georgia: hang the card from the circle so the top edge of the wedge
-      // shows above the card and the circle sits inside the wedge
+      // Georgia: hang the card from the circle
       if (spotlightContainer.classList.contains('anchor-card')) {
         const top = Math.min(cy - 0.17 * circle.offsetWidth, app.offsetHeight - 12 - card.offsetHeight);
         card.style.top = top + 'px';
@@ -874,8 +873,18 @@
       // Calculate wedge corners and tangent lines
       const r = circle.offsetWidth / 2 - 1;
       const p2 = [card.offsetLeft + card.offsetWidth, card.offsetTop + card.offsetHeight];
-      const p1 = [card.offsetLeft, card.offsetTop];
-      const t1 = tangentPoints(p1[0], p1[1], cx, cy, r).sort((a, b) => a[1] - b[1])[0];
+      const cardAboveCircle = card.offsetTop < cy - r;
+      let p1, t1;
+      if (cardAboveCircle) {
+        // Syria: wedge leaves the card's top-right corner and runs into the near side of the circle
+        p1 = [card.offsetLeft + card.offsetWidth, card.offsetTop];
+        const vx = cx - p1[0], vy = cy - p1[1], vd = Math.hypot(vx, vy);
+        t1 = [cx - vx / vd * r, cy - vy / vd * r];
+      } else {
+        // Turkey, Georgia: wedge leaves the card's top-left corner and touches the circle's upper tangent
+        p1 = [card.offsetLeft, card.offsetTop];
+        t1 = tangentPoints(p1[0], p1[1], cx, cy, r).sort((a, b) => a[1] - b[1])[0];
+      }
       const t2 = tangentPoints(p2[0], p2[1], cx, cy, r).sort((a, b) => b[0] - a[0])[0];
 
       wedge.setAttribute('viewBox', '0 0 ' + app.offsetWidth + ' ' + app.offsetHeight);
