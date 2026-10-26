@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>When the cat's away - Interactive Infographic</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-navy-dark: #141F52;
+      --color-navy-header: #1F2E7A;
+      --color-primary-blue: #2E45B8;
+      --color-primary-hover: #1e3294;
+      --color-teal: #1DC9A4;
+      --color-pin-unviewed: #D02B2B;
+      --color-pin-viewed: #2E45B8;
+      --color-bg-light: #EBEDFA;
+      --color-text-dark: #111111;
+      --font-main: 'Noto Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      background-color: #F4F6FB;
+    }
+
+    body {
+      font-family: var(--font-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    /* CARD CONTAINER WITH DROP SHADOW */
+    .interactive-container {
+      width: 100%;
+      max-width: 1120px;
+      aspect-ratio: 16 / 9;
+      background: #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0,0,0,0.06);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========================================================= */
+    /* 1. COVER SCREEN                                           */
+    /* ========================================================= */
+    .view-cover {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3.5rem 5.5rem;
+      z-index: 500;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .view-cover.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .cover-content {
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 2.2rem;
+      z-index: 2;
+    }
+
+    .cover-title {
+      font-size: clamp(34px, 4.2vw, 52px);
+      font-weight: 700;
+      color: #101828;
+      line-height: 1.2;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: slideUpFade 1.1s cubic-bezier(0.25, 1, 0.4, 1) forwards 0.15s;
+    }
+
+    .btn-start {
+      align-self: flex-start;
+      background-color: var(--color-primary-blue);
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 2.8rem;
+      font-size: 1.05rem;
+      font-family: var(--font-main);
+      font-weight: 700;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(46, 69, 184, 0.3);
+      transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out forwards 0.6s;
+    }
+
+    .btn-start:hover {
+      background-color: var(--color-navy-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(20, 31, 82, 0.35);
+    }
+
+    .btn-start:focus-visible {
+      outline: 3px solid var(--color-teal);
+      outline-offset: 2px;
+    }
+
+    .cover-illustration {
+      width: 45%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cover-illustration svg {
+      width: 100%;
+      max-width: 380px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 10px 20px rgba(20, 31, 82, 0.08));
+    }
+
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ========================================================= */
+    /* 2. HEADER & STAGE                                         */
+    /* ========================================================= */
+    .app-header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.75rem;
+      background: #ffffff;
+      border-bottom: 1px solid #ECEEF3;
+      height: 10%;
+      min-height: 48px;
+    }
+
+    .sub-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+      letter-spacing: -0.01em;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .icon-btn {
+      background: #ffffff;
+      border: 1.5px solid var(--color-navy-header);
+      color: var(--color-navy-header);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover, .icon-btn:focus-visible {
+      background: var(--color-bg-light);
+      border-color: var(--color-teal);
+      color: var(--color-navy-dark);
+      outline: none;
+    }
+
+    .stage-view {
+      position: relative;
+      width: 100%;
+      height: 90%;
+      background-color: #F8F9FC;
+      overflow: hidden;
+      perspective: 800px;
+    }
+
+    .world-map-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* OVERLAY HIGHLIGHTS */
+    .map-highlights {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .map-hl {
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      fill: #FF5A5A;
+      stroke: #E3120B;
+      stroke-width: 1;
+    }
+
+    .map-hl.active {
+      opacity: 0.75;
+    }
+
+    .map-leader {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .map-leader.show {
+      opacity: 1;
+    }
+
+    /* MAP PINS */
+    .pin-btn {
+      position: absolute;
+      transform: translate(-50%, -100%) scale(0);
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 20;
+      opacity: 0;
+      padding: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .pin-btn.animated {
+      animation: pinPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .pin-btn.swiveling .pin-img-wrapper {
+      animation: pinSwivel 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .pin-btn.viewed {
+      cursor: default;
+    }
+
+    .pin-btn:not(.viewed):hover,
+    .pin-btn:not(.viewed):focus-visible {
+      transform: translate(-50%, -100%) scale(1.25) !important;
+      outline: none;
+    }
+
+    .pin-img-wrapper {
+      width: 24px;
+      height: 32px;
+      transform-style: preserve-3d;
+      display: block;
+      filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.3));
+    }
+
+    .pin-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @keyframes pinPop {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -100%) scale(0);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -100%) scale(1);
+      }
+    }
+
+    @keyframes pinSwivel {
+      0% { transform: rotateY(0deg) scale(1); }
+      50% { transform: rotateY(90deg) scale(1.2); }
+      100% { transform: rotateY(180deg) scale(1); }
+    }
+
+    /* PIN COORDINATES */
+    .pin-ukraine    { top: 25.6%; left: 55.3%; }
+    .pin-turkey     { top: 32.4%; left: 56.5%; }
+    .pin-georgia    { top: 30.1%; left: 59.0%; }
+    .pin-syria      { top: 34.7%; left: 58.1%; }
+    .pin-yemen      { top: 47.3%; left: 61.1%; }
+    .pin-indiachina { top: 33.8%; left: 69.9%; }
+    .pin-southchina { top: 47.3%; left: 80.9%; }
+
+    /* ========================================================= */
+    /* 3. MODALS & SPOTLIGHT OVERLAYS                            */
+    /* ========================================================= */
+    .dark-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(16, 25, 68, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .dark-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* SPOTLIGHT VIEW */
+    .spotlight-view-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 1.75rem;
+    }
+
+    .spotlight-stack {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+    }
+
+    .spotlight-beam {
+      position: relative;
+      width: 920px;
+      max-width: 92%;
+      aspect-ratio: 920 / 140;
+      margin-bottom: -1px;
+      z-index: 310;
+      pointer-events: none;
+    }
+
+    .spotlight-triangle-clip {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .beam-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* CIRCULAR SPOTLIGHT FRAME */
+    .spotlight-circle-frame {
+      position: absolute;
+      top: 25%;
+      left: calc(50% + var(--dx, 0px));
+      transform: translate(-50%, -50%);
+      width: 124px;
+      height: 124px;
+      border-radius: 50%;
+      border: 3px solid #ffffff;
+      overflow: hidden;
+      z-index: 320;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.4);
+      background-color: #0b1437;
+    }
+
+    .spotlight-map-viewport {
+      width: 100%;
+      height: 100%;
+      display: block;
+      transform-origin: center center;
+    }
+
+    /* DIALOG CARD */
+    .dialog-card {
+      background: #ffffff;
+      border-radius: 0 0 6px 6px;
+      width: 920px;
+      max-width: 92%;
+      padding: 1.5rem 2.5rem 2rem;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+      position: relative;
+      z-index: 315;
+    }
+
+    .dialog-card h2 {
+      font-size: 1.35rem;
+      color: var(--color-navy-dark);
+      margin-bottom: 0.8rem;
+      font-weight: 700;
+      border-bottom: 1px solid #E2E8F0;
+      padding-bottom: 0.6rem;
+      padding-right: 2.5rem;
+    }
+
+    .dialog-card p {
+      font-size: 0.88rem;
+      color: #334155;
+      line-height: 1.65;
+    }
+
+    .close-card-btn {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: #ffffff;
+      border: 1.5px solid var(--color-primary-blue);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+      color: var(--color-primary-blue);
+      transition: all 0.2s ease;
+    }
+
+    .close-card-btn:hover {
+      background: var(--color-bg-light);
+      transform: rotate(90deg);
+    }
+
+    /* LEFT-ALIGNED SPOTLIGHT FOR SPECIFIC REGIONS */
+    .spotlight-view-container.layout-left .spotlight-stack {
+      align-items: flex-start;
+      padding-left: 4.5rem;
+    }
+
+    .spotlight-view-container.layout-left .dialog-card {
+      width: 520px;
+      max-width: 90%;
+    }
+
+    .spotlight-view-container.layout-left .spotlight-beam {
+      width: 520px;
+      max-width: 90%;
+    }
+
+    /* CENTER INSTRUCTION / COMPLETION MODAL */
+    .center-modal {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 3rem 2.5rem 2.25rem;
+      text-align: center;
+      max-width: 540px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+      position: relative;
+      margin: 1.5rem;
+      animation: modalPop 0.3s ease-out;
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-badge-graphic {
+      position: absolute;
+      top: -38px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 76px;
+      height: 76px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--color-bg-light);
+    }
+
+    .center-modal h2 {
+      font-size: 0.98rem;
+      color: #1e293b;
+      margin-bottom: 1.8rem;
+      font-weight: 500;
+      line-height: 1.65;
+    }
+
+    .action-btn {
+      background: var(--color-primary-blue);
+      color: #ffffff;
+      border: none;
+      padding: 0.7rem 2.5rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.15s ease;
+      display: inline-block;
+    }
+
+    .action-btn:hover {
+      background: var(--color-navy-dark);
+      transform: translateY(-1px);
+    }
+
+    /* BIBLIOGRAPHY MODAL */
+    .biblio-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(16, 25, 68, 0.94);
+      z-index: 400;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      backdrop-filter: blur(2px);
+    }
+
+    .biblio-overlay.active {
+      display: flex;
+    }
+
+    .biblio-card {
+      background: #ffffff;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 760px;
+      max-height: 82vh;
+      padding: 2.25rem;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+
+    .biblio-card h3 {
+      font-size: 1.35rem;
+      color: var(--color-navy-dark);
+      margin-bottom: 1.25rem;
+      font-weight: 700;
+    }
+
+    .biblio-card p {
+      font-size: 0.85rem;
+      color: #334155;
+      margin-bottom: 0.9rem;
+      text-indent: -1.25rem;
+      padding-left: 1.25rem;
+      line-height: 1.55;
+    }
+
+    /* RESPONSIVE ADAPTATIONS */
+    @media (max-width: 768px) {
+      body {
+        padding: 0.5rem;
+      }
+      .interactive-container {
+        aspect-ratio: auto;
+        min-height: 560px;
+        height: 94vh;
+      }
+      .view-cover {
+        flex-direction: column-reverse;
+        padding: 2rem 1.5rem;
+        gap: 1.5rem;
+        justify-content: center;
+      }
+      .cover-content {
+        align-items: center;
+        text-align: center;
+      }
+      .cover-title {
+        font-size: 28px;
+      }
+      .btn-start {
+        align-self: center;
+        width: 100%;
+        max-width: 220px;
+      }
+      .cover-illustration {
+        width: 55%;
+      }
+      .dialog-card {
+        width: 95%;
+        padding: 1.25rem 1.5rem;
+      }
+      .dialog-card h2 {
+        font-size: 1.15rem;
+      }
+      .spotlight-circle-frame {
+        width: 92px;
+        height: 92px;
+      }
+      .spotlight-view-container.layout-left .spotlight-stack {
+        padding-left: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ROOT CONTAINER WITH DROP SHADOW -->
+  <div class="interactive-container" id="interactive-app">
+
+    <!-- COVER SLIDE -->
+    <section class="view-cover" id="cover-view">
+      <div class="cover-content">
+        <h1 class="cover-title">When the cat's away</h1>
+        <button class="btn-start" id="btn-start-cover" aria-label="Start Interactive">Start</button>
+      </div>
+      <div class="cover-illustration">
+        <!-- SVG Vector of Mouse with World Globe head & cheese piece -->
+        <svg viewBox="0 0 320 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="160" cy="245" rx="110" ry="24" fill="#EAE8DC"/>
+          <!-- Mouse Body & Tail -->
+          <path d="M228 234C220 236 200 240 186 238C175 236 172 225 174 214C178 195 192 180 205 168C220 155 228 140 220 120C210 123 200 134 195 145C190 156 182 170 170 178C162 183 154 185 148 192C140 202 143 218 152 226C158 232 166 235 174 235C188 235 220 232 230 225C245 215 258 190 264 165C266 155 264 148 261 146C258 144 252 147 248 154C244 161 242 173 241 180C240 195 245 210 252 220C257 228 265 235 272 238" stroke="#121B47" stroke-width="5" stroke-linecap="round"/>
+          <path d="M165 232C178 232 208 230 220 215C227 206 226 190 220 180C214 168 203 158 198 146C192 133 194 122 204 116C190 116 175 125 168 138C160 152 160 167 155 182C150 197 142 210 148 224C151 229 157 232 165 232Z" fill="#121B47"/>
+          
+          <!-- Cheese Slice -->
+          <polygon points="120,205 152,192 152,218 120,228" fill="#F8C630"/>
+          <polygon points="120,205 140,185 152,192 120,205" fill="#FED856"/>
+          <circle cx="132" cy="214" r="3" fill="#D99B15"/>
+          <circle cx="144" cy="204" r="2.2" fill="#D99B15"/>
+          <circle cx="141" cy="215" r="1.8" fill="#D99B15"/>
+
+          <!-- Mouse Ear Left -->
+          <circle cx="132" cy="88" r="28" fill="#121B47"/>
+          <!-- Mouse Ear Right -->
+          <circle cx="218" cy="84" r="25" fill="#121B47"/>
+
+          <!-- Globe Head -->
+          <circle cx="175" cy="118" r="46" fill="#3155D6"/>
+          <!-- Continents overlay on globe -->
+          <path d="M152 98C156 94 165 92 172 96C178 99 184 94 190 95C198 97 205 106 200 112C194 118 186 117 181 123C177 127 175 136 170 140C165 144 158 141 154 135C148 127 142 120 146 110C148 105 150 100 152 98Z" fill="#1F3699"/>
+          <path d="M185 130C190 128 196 130 198 135C200 140 196 148 190 147C184 146 182 136 185 130Z" fill="#1F3699"/>
+          <path d="M165 82C170 80 178 82 181 86C176 89 168 88 165 82Z" fill="#1F3699"/>
+          <ellipse cx="160" cy="104" rx="2" ry="2" fill="#7FA4FA"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="brand-section">
+        <span class="sub-title">When the cat's away</span>
+      </div>
+      <nav class="header-buttons" aria-label="Interactive Navigation">
+        <button class="icon-btn" id="btn-reset" title="Reset Infographic" aria-label="Reset Infographic">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-biblio" title="View Bibliography" aria-label="Open Bibliography">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-exit" title="Exit" aria-label="Exit Interactive">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- MAIN INTERACTIVE MAP STAGE -->
+    <main class="stage-view">
+      
+      <!-- BASE WORLD MAP SVG -->
+      <svg class="world-map-svg" viewBox="0 0 1112.8 498.4" preserveAspectRatio="xMidYMid meet">
+        <rect width="1112.8" height="498.4" fill="#F8F9FC"/>
+        <!-- Background Grid Coordinates / Subtle World Outlines -->
+        <g fill="#D8DEEB" stroke="#C5CFE2" stroke-width="0.8">
+          <!-- North America -->
+          <path d="M150 70 L240 60 L320 80 L300 140 L260 170 L220 180 L180 150 L140 110 Z" />
+          <path d="M210 190 L240 220 L220 250 L195 230 Z"/>
+          <!-- South America -->
+          <path d="M260 250 L320 270 L340 330 L300 420 L270 410 L250 320 Z"/>
+          <!-- Greenland -->
+          <path d="M370 40 L430 45 L410 85 L360 70 Z"/>
+          <!-- Europe / Western Asia -->
+          <path d="M480 80 L560 65 L640 70 L620 120 L580 140 L530 135 L500 110 Z"/>
+          <path d="M510 135 L540 160 L515 175 L490 150 Z"/>
+          <!-- Africa -->
+          <path d="M500 185 L590 180 L630 230 L620 320 L580 370 L530 350 L485 240 Z"/>
+          <path d="M635 305 L650 330 L640 360 L625 330 Z"/>
+          <!-- Asia & Russia -->
+          <path d="M640 70 L860 60 L920 90 L890 170 L820 190 L750 170 L650 120 Z"/>
+          <!-- India / South Asia -->
+          <path d="M720 175 L780 175 L760 240 L730 230 Z"/>
+          <!-- East Asia / China -->
+          <path d="M780 150 L870 145 L860 220 L810 230 L775 190 Z"/>
+          <!-- South East Asia islands -->
+          <path d="M830 250 L870 260 L850 280 L820 270 Z"/>
+          <path d="M870 270 L910 275 L890 300 Z"/>
+          <!-- Australia -->
+          <path d="M850 330 L930 320 L940 380 L880 410 L840 370 Z"/>
+        </g>
+      </svg>
+
+      <!-- REGION HIGHLIGHT LAYERS (Exact Coordinates matching reference) -->
+      <svg class="map-highlights" viewBox="0 0 1112.8 498.4" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <!-- Ukraine -->
+        <rect id="hl-ukraine" class="map-hl" x="589.3" y="96.7" width="52.1" height="29.2" rx="4"/>
+        <!-- Turkey -->
+        <rect id="hl-turkey" class="map-hl" x="603.3" y="134.3" width="60.2" height="23.6" rx="4"/>
+        <!-- Syria -->
+        <rect id="hl-syria" class="map-hl" x="634.5" y="153" width="20" height="19" rx="3"/>
+        <!-- Georgia -->
+        <rect id="hl-georgia" class="map-hl" x="651" y="133.5" width="22.1" height="9.5" rx="2"/>
+        <!-- Yemen -->
+        <rect id="hl-yemen" class="map-hl" x="664.5" y="219.8" width="34.1" height="24.2" rx="3"/>
+        <!-- India-China border -->
+        <rect id="hl-indiachina" class="map-hl" x="769" y="155.6" width="15.5" height="20.4" rx="2"/>
+        <!-- South China Sea -->
+        <rect id="hl-southchina" class="map-hl" x="860" y="189" width="54.6" height="84.1" rx="6" style="fill:#3852D4; stroke:#1E36A4;"/>
+        
+        <!-- Galwan leader line -->
+        <polyline id="leader-indiachina" class="map-leader" points="778,156 777.7,160.9 775,163.6" fill="none" stroke="#E3120B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      <!-- MAP PINS -->
+      <button class="pin-btn pin-ukraine" data-id="ukraine" aria-label="Ukraine Conflict">
+        <span class="pin-img-wrapper">
+          <svg class="pin-svg" viewBox="0 0 24 32" fill="none">
+            <path d="M12 0C5.37 0 0 5.37 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.37 18.63 0 12 0Z" fill="#D02B2B"/>
+            <circle cx="12" cy="11" r="5" fill="#FFFFFF"/>
+          </svg>
+        </span>
+      </button>
+
+      <button class="pin-btn pin-turkey" data-id="turkey" aria-label="Turkey Intervention">
+        <span class="pin-img-wrapper">
+          <svg class="pin-svg" viewBox="0 0 24 32" fill="none">
+            <path d="M12 0C5.37 0 0 5.37 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.37 18.63 0 12 0Z" fill="#D02B2B"/>
+            <circle cx="12" cy="11" r="5" fill="#FFFFFF"/>
+          </svg>
+        </span>
+      </button>
+
+      <button class="pin-btn pin-syria" data-id="syria" aria-label="Syria Red Line">
+        <span class="pin-img-wrapper">
+          <svg class="pin-svg" viewBox="0 0 24 32" fill="none">
+            <path d="M12 0C5.37 0 0 5.37 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.37 18.63 0 12 0Z" fill="#D02B2B"/>
+            <circle cx="12" cy="11" r="5" fill="#FFFFFF"/>
+          </svg>
+        </span>
+      </button>
+
+      <button class="pin-btn pin-georgia" data-id="georgia" aria-label="Georgia War">
+        <span class="pin-img-wrapper">
+          <svg class="pin-svg" viewBox="0 0 24 32" fill="none">
+            <path d="M12 0C5.37 0 0 5.37 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.37 18.63 0 12 0Z" fill="#D02B2B"/>
+            <circle cx="12" cy="11" r="5" fill="#FFFFFF"/>
+          </svg>
+        </span>
+      </button>
+
+      <button class="pin-btn pin-yemen" data-id="yemen" aria-label="Yemen Crisis">
+        <span class="pin-img-wrapper">
+          <svg class="pin-svg" viewBox="0 0 24 32" fill="none">
+            <path d="M12 0C5.37 0 0 5.37 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.37 18.63 0 12 0Z" fill="#D02B2B"/>
+            <circle cx="12" cy="11" r="5" fill="#FFFFFF"/>
+          </svg>
+        </span>
+      </button>
+
+      <button class="pin-btn pin-indiachina" data-id="indiachina" aria-label="India-China Conflict">
+        <span class="pin-img-wrapper">
+          <svg class="pin-svg" viewBox="0 0 24 32" fill="none">
+            <path d="M12 0C5.37 0 0 5.37 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.37 18.63 0 12 0Z" fill="#D02B2B"/>
+            <circle cx="12" cy="11" r="5" fill="#FFFFFF"/>
+          </svg>
+        </span>
+      </button>
+
+      <button class="pin-btn pin-southchina" data-id="southchina" aria-label="South China Sea">
+        <span class="pin-img-wrapper">
+          <svg class="pin-svg" viewBox="0 0 24 32" fill="none">
+            <path d="M12 0C5.37 0 0 5.37 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.37 18.63 0 12 0Z" fill="#D02B2B"/>
+            <circle cx="12" cy="11" r="5" fill="#FFFFFF"/>
+          </svg>
+        </span>
+      </button>
+    </main>
+
+    <!-- 1. INTRO INSTRUCTION MODAL -->
+    <div class="dark-overlay" id="intro-modal">
+      <div class="center-modal">
+        <div class="modal-badge-graphic">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="#2E45B8">
+            <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"/>
+          </svg>
+        </div>
+        <h2>The decline of US dominance has had significant repercussions around the world. Engage with this interactive infographic by clicking on the highlighted countries on the map to explore some of the consequences of the US’ retreat or non-intervention.</h2>
+        <button class="action-btn" id="intro-continue-btn">Continue</button>
+      </div>
+    </div>
+
+    <!-- 2. SPOTLIGHT OVERLAY MODAL -->
+    <div class="dark-overlay" id="content-modal">
+      <div class="spotlight-view-container" id="spotlight-container">
+        <div class="spotlight-stack" id="spotlight-stack">
+
+          <!-- TRIANGLE BEAM + CIRCLE -->
+          <div class="spotlight-beam" id="spotlight-beam">
+            <div class="spotlight-triangle-clip">
+              <svg class="beam-svg" viewBox="0 0 920 140" preserveAspectRatio="none">
+                <polygon points="460,0 0,140 920,140" fill="rgba(255, 255, 255, 0.12)"/>
+              </svg>
+            </div>
+
+            <!-- REGIONAL CIRCULAR CUTOUT -->
+            <div class="spotlight-circle-frame" id="spotlight-circle">
+              <svg class="spotlight-map-viewport" viewBox="0 0 100 100" id="spotlight-viewport">
+                <rect width="100" height="100" fill="#17245A"/>
+                <circle cx="50" cy="50" r="34" fill="#233580" stroke="#3A50AD" stroke-width="2"/>
+                <path d="M30 45 Q50 35 70 52 Q60 68 35 60 Z" fill="#3D5CD4"/>
+                <circle cx="50" cy="48" r="4.5" fill="#FF4747"/>
+                <circle cx="50" cy="48" r="2" fill="#FFFFFF"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- DIALOG CARD -->
+          <div class="dialog-card">
+            <button class="close-card-btn" id="close-dialog-btn" aria-label="Close dialog">&times;</button>
+            <h2 id="card-title">Event Title</h2>
+            <p id="card-body">Event narrative text goes here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. COMPLETION MODAL -->
+    <div class="dark-overlay" id="completion-modal">
+      <div class="center-modal">
+        <h2>You have completed this interactive infographic.<br>What would you like to do next?</h2>
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+          <button class="action-btn" id="completion-exit-btn">Exit</button>
+          <button class="action-btn" id="completion-biblio-btn" style="background: var(--color-bg-light); color: var(--color-navy-header);">View bibliography</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. BIBLIOGRAPHY OVERLAY -->
+    <div class="biblio-overlay" id="biblio-overlay">
+      <div class="biblio-card">
+        <button class="close-card-btn" id="close-biblio-btn" aria-label="Close Bibliography">&times;</button>
+        <h3>Bibliography</h3>
+        <p>Council on Foreign Relations. n.d. <i>Conflict in Ukraine.</i> Available: https://www.cfr.org/global-conflict-tracker/conflict/conflict-ukraine [2021, February 23].</p>
+        <p>Council on Foreign Relations. n.d. <i>Conflict in Yemen.</i> Available: https://www.cfr.org/global-conflict-tracker/conflict/war-yemen [2021, February 23].</p>
+        <p>Falk, T.O. 2020. What the US troop withdrawal means for Iraq. <i>Aljazeera.</i> 22 November.</p>
+        <p>Fisher, M. 2014. Everything you need to know about the Ukraine crisis. <i>Vox.</i> 3 September.</p>
+        <p>Gilani, I. 2020. Timeline - Clashes, Standoffs between Chinese and Indian armies. <i>Anadolu Agency.</i> 16 June.</p>
+        <p>History. 2020. 5-day long Russo-Georgian War begins. <i>History.com.</i></p>
+        <p>Martinez, L. 2019. Why the US Navy sails past disputed artificial islands claimed by China. <i>ABC News.</i> 6 May.</p>
+        <p>Rhodes, B. 2018. Inside the White House during the Syrian 'red line' crisis. <i>The Atlantic.</i> 3 June.</p>
+        <p>Turkey launches ground offensive in northern Syria. 2019. <i>BBC.</i> 9 October.</p>
+        <p>United Nations International Children's Emergency Fund. n.d. Yemen Crisis. <i>UNICEF.</i></p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const regionData = {
+      ukraine: {
+        title: "The invasion of Crimea and eastern Ukraine",
+        body: "In 2013, Ukraine’s pro-Russian government suspended the signing of an association agreement with the European Union, sparking mass protests by the pro-European Maidan movement, the Ukrainian revolution and the overthrow of Ukraine’s pro-Russian government. In 2014, Russia took advantage of the internal conflict to impose itself in this part of the former Soviet Union, calculating that the US would not be able to deter it. First, it annexed Crimea, a peninsula in the Black Sea. Protestors in Crimea, backed by disguised Russian soldiers, rejected the new Ukrainian government, seized the local parliament building and organised a referendum, in which, Russia claimed, Crimeans voted overwhelmingly to join Russia. Soon after pro-Russian rebels seized territory in eastern Ukraine with the help of the Russian army, which led to brutal fighting and a humanitarian crisis.",
+        layoutClass: ""
+      },
+      turkey: {
+        title: "Turkey’s intervention in Syria",
+        body: "In October 2019, Turkey launched an attack in northern Syria, shortly after Donald Trump announced the withdrawal of US troops. This withdrawal left the Syrian Democratic Forces and the Kurds, its main allies in its battle against the Islamic State, without US military support. Turkey claimed the attack was an attempt to prevent a “terror corridor” along its southern border.",
+        layoutClass: "layout-left"
+      },
+      syria: {
+        title: "Obama’s “red line” in Syria",
+        body: "In August 2012, Barack Obama gave a warning to Syria's president that the use of chemical weapons by the Assad government in the country's civil war would cross a “red line”. One year later, opposition-held areas near Damascus were struck by missiles containing sarin gas. Hundreds died. Obama asked for a Congressional resolution to authorise military action in Syria but, against a background of popular opposition to such action, the resolution was never voted on. Instead, Russia negotiated a deal under which Syria agreed to destroy its chemical-weapons stockpile and to join the Chemical Weapons Convention.",
+        layoutClass: "layout-left"
+      },
+      georgia: {
+        title: "The Russo-Georgian war",
+        body: "The relationship between Russia and Georgia has been tense ever since the fall of the Soviet Union and Russia’s annexation of Abkhazia and South Ossetia, two autonomous regions which Georgia and most of the world recognise as part of Georgia but which Russia and a few allies call independent states. In August 2008, after George W. Bush announced his support for Georgia joining NATO, tension boiled over and resulted in a bloody 5-day war between Russia and Georgia. By 2021, Georgia was still not a member of NATO and Russia still controlled Abkhazia and South Ossetia.",
+        layoutClass: ""
+      },
+      yemen: {
+        title: "War and famine in Yemen",
+        body: "In 2014, a long-running conflict between the predominantly Sunni government of Yemen and rebels belonging to the mainly Shia Houthi movement—with links to Iran—erupted into a civil war. After the Houthis captured the capital, the conflict turned into another front in the contest for regional dominance between Iran and Saudi Arabia and another example of the US' inability to restrain military adventurism in the Middle East.",
+        layoutClass: ""
+      },
+      indiachina: {
+        title: "India-China conflict",
+        body: "Tensions have been high between these two countries over the contours of their borders for almost half a century. With China’s growing brazenness, things escalated in 2020 when the Indian and Chinese armies clashed at the Galwan Valley, resulting in the brutal killing of 20 Indian soldiers. China claimed that the clash was a reaction to Indian forces carrying out illegal activities.",
+        layoutClass: ""
+      },
+      southchina: {
+        title: "Islands in the South China Sea",
+        body: "In 2014, China started constructing artificial islands in the South China Sea. These islands have been transformed into military facilities, projecting China’s military power in the disputed maritime region and pushing back against the US naval presence in the western Pacific. The US and its allies have seen this as destabilising and intimidating.",
+        layoutClass: ""
+      }
+    };
+
+    const coverView = document.getElementById('cover-view');
+    const introModal = document.getElementById('intro-modal');
+    const contentModal = document.getElementById('content-modal');
+    const completionModal = document.getElementById('completion-modal');
+    const biblioOverlay = document.getElementById('biblio-overlay');
+    const cardTitle = document.getElementById('card-title');
+    const cardBody = document.getElementById('card-body');
+    const spotlightContainer = document.getElementById('spotlight-container');
+
+    const viewedMap = new Set();
+    let activePin = null;
+
+    // ALIGN SPOTLIGHT POSITION WITH ACTIVE PIN
+    function alignSpotlightToPin(pin) {
+      if (!pin) return;
+      const app = document.getElementById('interactive-app');
+      const stage = document.querySelector('.stage-view');
+      const stack = document.getElementById('spotlight-stack');
+      const circle = document.getElementById('spotlight-circle');
+      const card = document.querySelector('.dialog-card');
+      const pinWrapper = pin.querySelector('.pin-img-wrapper');
+
+      stack.style.transform = '';
+      circle.style.setProperty('--dx', '0px');
+
+      const appRect = app.getBoundingClientRect();
+      const scale = appRect.width / app.offsetWidth || 1;
+
+      const gap = pin.offsetHeight - pinWrapper.offsetHeight;
+      const tipX = stage.offsetLeft + pin.offsetLeft;
+      const tipY = stage.offsetTop + pin.offsetTop - gap;
+
+      const c = circle.getBoundingClientRect();
+      const cx = (c.left + c.width / 2 - appRect.left) / scale;
+      const cy = (c.top + c.height / 2 - appRect.top) / scale;
+      const radius = c.height / 2 / scale;
+
+      let dy = tipY - cy;
+      let dx = tipX - cx;
+
+      const cardBottom = (card.getBoundingClientRect().bottom - appRect.top) / scale;
+      const maxDown = app.offsetHeight - 8 - cardBottom;
+      const maxUp = 4 - (cy - radius);
+      dy = Math.min(maxDown, Math.max(maxUp, dy));
+      dx = Math.max(-18, Math.min(18, dx));
+
+      stack.style.transform = `translateY(${dy}px)`;
+      circle.style.setProperty('--dx', `${dx}px`);
+    }
+
+    window.addEventListener('resize', () => {
+      if (contentModal.classList.contains('active')) alignSpotlightToPin(activePin);
+    });
+
+    // 1. COVER: CLICK START BUTTON
+    document.getElementById('btn-start-cover').addEventListener('click', () => {
+      coverView.classList.add('hidden');
+      
+      const pins = document.querySelectorAll('.pin-btn');
+      pins.forEach((pin, index) => {
+        setTimeout(() => {
+          pin.classList.add('animated');
+        }, index * 120);
+      });
+
+      setTimeout(() => {
+        introModal.classList.add('active');
+      }, pins.length * 120 + 300);
+    });
+
+    // 2. INTRO MODAL: CONTINUE
+    document.getElementById('intro-continue-btn').addEventListener('click', () => {
+      introModal.classList.remove('active');
+    });
+
+    // 3. MAP PINS CLICK
+    document.querySelectorAll('.pin-btn').forEach(pin => {
+      pin.addEventListener('click', (e) => {
+        const id = e.currentTarget.dataset.id;
+        const data = regionData[id];
+        if (data) {
+          cardTitle.textContent = data.title;
+          cardBody.textContent = data.body;
+
+          spotlightContainer.className = "spotlight-view-container " + (data.layoutClass || "");
+
+          activePin = e.currentTarget;
+          alignSpotlightToPin(activePin);
+          contentModal.classList.add('active');
+          e.currentTarget.classList.add('viewed');
+          viewedMap.add(id);
+        }
+      });
+    });
+
+    // 4. CLOSE SPOTLIGHT DIALOG & SWIVEL PIN TO VIEWED COLOR (BLUE)
+    document.getElementById('close-dialog-btn').addEventListener('click', () => {
+      if (activePin) {
+        const pinBtn = activePin;
+        const pinSvgPath = pinBtn.querySelector('.pin-svg path');
+        
+        pinBtn.classList.add('swiveling');
+        
+        setTimeout(() => {
+          if (pinSvgPath) {
+            pinSvgPath.setAttribute('fill', '#2E45B8');
+          }
+        }, 300);
+
+        setTimeout(() => {
+          pinBtn.classList.remove('swiveling');
+        }, 600);
+      }
+
+      contentModal.classList.remove('active');
+      if (viewedMap.size === 7) {
+        setTimeout(() => completionModal.classList.add('active'), 600);
+      }
+    });
+
+    // 5. HEADER BUTTONS & MODALS
+    document.getElementById('btn-biblio').addEventListener('click', () => biblioOverlay.classList.add('active'));
+    document.getElementById('close-biblio-btn').addEventListener('click', () => biblioOverlay.classList.remove('active'));
+    document.getElementById('completion-biblio-btn').addEventListener('click', () => {
+      completionModal.classList.remove('active');
+      biblioOverlay.classList.add('active');
+    });
+
+    // RESET INFOGRAPHIC
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      viewedMap.clear();
+      document.querySelectorAll('.pin-btn').forEach(p => {
+        p.classList.remove('viewed', 'animated', 'swiveling');
+        const pinSvgPath = p.querySelector('.pin-svg path');
+        if (pinSvgPath) {
+          pinSvgPath.setAttribute('fill', '#D02B2B');
+        }
+      });
+      completionModal.classList.remove('active');
+      contentModal.classList.remove('active');
+      biblioOverlay.classList.remove('active');
+      introModal.classList.remove('active');
+      coverView.classList.remove('hidden');
+    });
+
+    // EXIT BUTTON
+    document.getElementById('btn-exit').addEventListener('click', () => {
+      coverView.classList.remove('hidden');
+    });
+    document.getElementById('completion-exit-btn').addEventListener('click', () => {
+      completionModal.classList.remove('active');
+      coverView.classList.remove('hidden');
+    });
+
+    // 6. HOVER HIGHLIGHTS FOR MAP REGIONS
+    (function () {
+      const hl = id => document.getElementById('hl-' + id);
+      document.querySelectorAll('.pin-btn').forEach(pin => {
+        const id = pin.dataset.id;
+        const on = () => { if (!pin.classList.contains('viewed')) hl(id)?.classList.add('active'); };
+        const off = () => hl(id)?.classList.remove('active');
+        pin.addEventListener('mouseenter', on);
+        pin.addEventListener('focus', on);
+        pin.addEventListener('mouseleave', off);
+        pin.addEventListener('blur', off);
+        pin.addEventListener('click', off);
+      });
+
+      // Synchronize the leader line for Galwan Valley
+      const icPin = document.querySelector('.pin-indiachina');
+      const icLeader = document.getElementById('leader-indiachina');
+      const syncLeader = () => icLeader.classList.toggle('show', icPin.classList.contains('animated'));
+      new MutationObserver(syncLeader).observe(icPin, { attributes: true, attributeFilter: ['class'] });
+      syncLeader();
+    })();
+  </script>
+</body>
+</html>
