@@ -299,7 +299,7 @@
     .pin-georgia    { top: 30.1%; left: 59.0%; }
     .pin-syria      { top: 34.7%; left: 58.1%; }
     .pin-yemen      { top: 47.3%; left: 61.1%; }
-    .pin-indiachina { top: 33.8%; left: 69.9%; }
+    .pin-indiachina { top: 35.2%; left: 69.8%; }
     .pin-southchina { top: 47.3%; left: 80.9%; }
 
     /* ========================================================= */
@@ -365,7 +365,7 @@
       display: block;
     }
 
-    /* TURKEY/GEORGIA/SYRIA/YEMEN WEDGE OVERLAY */
+    /* TURKEY/GEORGIA/SYRIA/YEMEN/INDIA-CHINA WEDGE OVERLAY */
     .spotlight-wedge {
       display: none;
       position: absolute;
@@ -464,7 +464,7 @@
     }
 
     /* ========================================================= */
-    /* LEFT-ALIGNED (TURKEY / GEORGIA / SYRIA / YEMEN) LAYOUT    */
+    /* LEFT-ALIGNED REGIONS LAYOUT STYLES                        */
     /* ========================================================= */
     .spotlight-view-container.layout-left .spotlight-stack {
       display: block;
@@ -482,9 +482,10 @@
       transition: none;
     }
 
-    /* Yemen layout-specific styling */
+    /* Wider card for India-China & Yemen */
     .spotlight-view-container.layout-left.card-wide .dialog-card {
       width: 45%;
+      bottom: 16%;
     }
 
     .spotlight-view-container.layout-left.wedge-outer .dialog-card {
@@ -728,7 +729,7 @@
               <img src="Resources/PastedVector-30.svg" alt="" class="spotlight-triangle-bg">
             </div>
 
-            <!-- DIAGONAL WEDGE FOR TURKEY, GEORGIA, SYRIA & YEMEN -->
+            <!-- DIAGONAL WEDGE FOR TURKEY, GEORGIA, SYRIA, YEMEN & INDIA-CHINA -->
             <svg class="spotlight-wedge" id="spotlight-wedge" aria-hidden="true">
               <polygon id="spotlight-wedge-poly" fill="#141F52"></polygon>
             </svg>
@@ -817,8 +818,8 @@
       southchina: {
         title: "Islands in the South China Sea",
         body: "In 2014, China started constructing artificial islands in the South China Sea. These islands have been transformed into military facilities, projecting China’s military power in the disputed maritime region and pushing back against the US naval presence in the western Pacific. The US and its allies have seen this as destabilising and intimidating.",
-        mapImg: "Resources/PastedVector-32.svg",
-        layoutClass: "layout-left zoom-map card-wider"
+        mapImg: "Resources/PastedVector-29.svg",
+        layoutClass: ""
       }
     };
 
@@ -846,7 +847,7 @@
       return [a - o, a + o].map(t => [px + l * Math.cos(t), py + l * Math.sin(t)]);
     }
 
-    // Turkey/Georgia/Syria/Yemen layout: card bottom-left, diagonal wedge connecting to the circle
+    // Left-aligned regions layout: card bottom-left, diagonal wedge connecting to the circle
     function alignLeftLayout(pin) {
       const app = document.getElementById('interactive-app');
       const stage = document.querySelector('.stage-view');
@@ -896,7 +897,7 @@
           t1 = [cx - vx / vd * r, cy - vy / vd * r];
         }
       } else {
-        // Turkey, Georgia: wedge leaves the card's top-left corner and touches the circle's upper tangent
+        // Turkey, Georgia, India-China: wedge leaves the card's top-left corner and touches the circle's upper tangent
         p1 = [card.offsetLeft, card.offsetTop];
         t1 = tangentPoints(p1[0], p1[1], cx, cy, r).sort((a, b) => a[1] - b[1])[0];
       }
