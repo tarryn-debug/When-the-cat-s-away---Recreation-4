@@ -365,7 +365,7 @@
       display: block;
     }
 
-    /* TURKEY/SYRIA WEDGE OVERLAY */
+    /* TURKEY/GEORGIA/SYRIA WEDGE OVERLAY */
     .spotlight-wedge {
       display: none;
       position: absolute;
@@ -464,7 +464,7 @@
     }
 
     /* ========================================================= */
-    /* TURKEY’S INTERVENTION IN SYRIA LAYOUT STYLES              */
+    /* LEFT-ALIGNED (TURKEY / GEORGIA) LAYOUT STYLES             */
     /* ========================================================= */
     .spotlight-view-container.layout-left .spotlight-stack {
       display: block;
@@ -624,7 +624,7 @@
           src="Resources/PastedVector-39.svg" 
           alt="Global Mouse Illustration" 
           id="cover-mouse-img"
-          onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 360 300\'><ellipse cx=\'240\' cy=\'240\' rx=\'95\' ry=\'28\' fill=\'%23E8E6DF\'/><path d=\'M240 230c45 0 85-30 65-75s-20-40-5-5-10 65-60 80z\' fill=\'%23141F52\'/><circle cx=\'215\' cy=\'130\' r=\'24\' fill=\'%23141F52\'/><circle cx=\'280\' cy=\'130\' r=\'24\' fill=\'%23141F52\'/><circle cx=\'280\' cy=\'130\' r=\'24\' fill=\'%23141F52\'/><circle cx=\'248\' cy=\'155\' r=\'42\' fill=\'%232E45B8\'/><polygon points=\'205,200 235,215 205,230\' fill=\'%23F5C344\'/></svg>';"
+          onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 360 300\'><ellipse cx=\'240\' cy=\'240\' rx=\'95\' ry=\'28\' fill=\'%23E8E6DF\'/><path d=\'M240 230c45 0 85-30 65-75s-20-40-5-5-10 65-60 80z\' fill=\'%23141F52\'/><circle cx=\'215\' cy=\'130\' r=\'24\' fill=\'%23141F52\'/><circle cx=\'280\' cy=\'130\' r=\'24\' fill=\'%23141F52\'/><circle cx=\'248\' cy=\'155\' r=\'42\' fill=\'%232E45B8\'/><polygon points=\'205,200 235,215 205,230\' fill=\'%23F5C344\'/></svg>';"
         >
       </div>
     </section>
@@ -718,7 +718,7 @@
               <img src="Resources/PastedVector-30.svg" alt="" class="spotlight-triangle-bg">
             </div>
 
-            <!-- DIAGONAL WEDGE FOR TURKEY'S INTERVENTION -->
+            <!-- DIAGONAL WEDGE FOR TURKEY & GEORGIA -->
             <svg class="spotlight-wedge" id="spotlight-wedge" aria-hidden="true">
               <polygon id="spotlight-wedge-poly" fill="#141F52"></polygon>
             </svg>
@@ -789,8 +789,8 @@
       georgia: {
         title: "The Russo-Georgian war",
         body: "The relationship between Russia and Georgia has been tense ever since the fall of the Soviet Union and Russia’s annexation of Abkhazia and South Ossetia, two autonomous regions which Georgia and most of the world recognise as part of Georgia but which Russia and a few allies call independent states. In August 2008, after George W. Bush announced his support for Georgia joining NATO, tension boiled over and resulted in a bloody 5-day war between Russia and Georgia. By 2021, Georgia was still not a member of NATO and Russia still controlled Abkhazia and South Ossetia.",
-        mapImg: "Resources/PastedVector-29.svg",
-        layoutClass: ""
+        mapImg: "Resources/PastedVector-31.svg",
+        layoutClass: "layout-left zoom-map anchor-card"
       },
       yemen: {
         title: "War and famine in Yemen",
@@ -836,7 +836,7 @@
       return [a - o, a + o].map(t => [px + l * Math.cos(t), py + l * Math.sin(t)]);
     }
 
-    // Turkey layout: card bottom-left, diagonal wedge connecting to the circle
+    // Turkey/Georgia layout: card bottom-left, diagonal wedge connecting to the circle
     function alignLeftLayout(pin) {
       const app = document.getElementById('interactive-app');
       const stage = document.querySelector('.stage-view');
@@ -860,8 +860,16 @@
       circle.style.setProperty('--cx', cx + 'px');
       circle.style.setProperty('--cy', cy + 'px');
 
-      card.style.top = '';
-      card.style.bottom = '';
+      // Georgia: hang the card from the circle so the top edge of the wedge
+      // shows above the card and the circle sits inside the wedge
+      if (spotlightContainer.classList.contains('anchor-card')) {
+        const top = Math.min(cy - 0.17 * circle.offsetWidth, app.offsetHeight - 12 - card.offsetHeight);
+        card.style.top = top + 'px';
+        card.style.bottom = 'auto';
+      } else {
+        card.style.top = '';
+        card.style.bottom = '';
+      }
 
       // Calculate wedge corners and tangent lines
       const r = circle.offsetWidth / 2 - 1;
